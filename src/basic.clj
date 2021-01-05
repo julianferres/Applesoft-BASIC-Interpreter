@@ -50,6 +50,8 @@
 (declare eliminar-cero-decimal)           ; IMPLEMENTAR
 (declare eliminar-cero-entero)            ; IMPLEMENTAR
 
+(defn spy [x] (prn x) x) ; funcion para debuggear rapidamente
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; driver-loop: el REPL del interprete de Applesoft BASIC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -342,7 +344,7 @@
 ; grabar-arch: recibe un nombre de archivo, graba en el
 ; el listado del programa usando la representacion normal y
 ; retorna el ambiente
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;f;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn grabar-arch [nom amb]
   (let [arch (clojure.java.io/writer nom)]
     (do (binding [*out* arch] (mostrar-listado (amb 0)))
@@ -661,8 +663,8 @@
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn palabra-reservada? [x]
+  (= x 'REM)
   )
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; operador?: predicado para determinar si un identificador es un
 ; operador, por ejemplo:
@@ -674,7 +676,10 @@
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn operador? [x]
-  )
+  (or
+    (= x '+)
+    (= x (symbol "+")))
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; anular-invalidos: recibe una lista de simbolos y la retorna con

@@ -1,6 +1,6 @@
 (require '[clojure.test :refer [is deftest run-tests]])
 
-(load-file "basic.clj")
+(load-file "src/basic.clj")
 
 (deftest test-palabra-reservada?
   (is (= true (palabra-reservada? 'REM)))
