@@ -663,8 +663,14 @@
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn palabra-reservada? [x]
-  (= x 'REM)
+  (or
+   (= x 'REM) (= x 'NEW) (= x 'CLEAR) (= x 'LIST) (= x 'RUN) (= x 'LOAD) (= x 'SAVE) (= x 'LET) (= x 'AND) (= x 'OR)
+   (= x 'INT) (= x 'SIN) (= x 'ATN) (= x 'LEN) (= x 'MID) (= x 'STR) (= x 'CHR) (= x 'ASC) (= x 'GOTO) (= x 'ON)
+   (= x 'IF) (= x 'THEN) (= x 'FOR) (= x 'TO) (= x 'STEP) (= x 'NEXT) (= x 'GOSUB) (= x 'RETURN) (= x 'END)
+   (= x 'INPUT) (= x 'READ) (= x 'RESTORE) (= x 'PRINT)
   )
+)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; operador?: predicado para determinar si un identificador es un
 ; operador, por ejemplo:
