@@ -97,27 +97,6 @@
   (is (= 'A (eliminar-cero-decimal 'A)))
   )
 
-; eliminar-cero-entero: recibe un simbolo y lo retorna convertido
-; en cadena, omitiendo para los numeros del intervalo (-1..1) el
-; cero a la izquierda del punto, por ejemplo:
-; user=> (eliminar-cero-entero nil)
-; nil
-; user=> (eliminar-cero-entero 'A)
-; "A"
-; user=> (eliminar-cero-entero 0)
-; "0"
-; user=> (eliminar-cero-entero 1.5)
-; "1.5"
-; user=> (eliminar-cero-entero 1)
-; "1"
-; user=> (eliminar-cero-entero -1)
-; "-1"
-; user=> (eliminar-cero-entero -1.5)
-; "-1.5"
-; user=> (eliminar-cero-entero 0.5)
-; ".5"
-; user=> (eliminar-cero-entero -0.5)
-; "-.5"
 (deftest test-eliminar-creo-entero
   (is (nil? (eliminar-cero-entero nil)))
   (is (= "A" (eliminar-cero-entero 'A)))
