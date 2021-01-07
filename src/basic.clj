@@ -995,7 +995,15 @@
 ; "-.5"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn eliminar-cero-entero [n]
-  )
+  (cond
+    (nil? n) n
+    (not (number? n)) (str n)
+    ; A esta altura ya quedan solo numeros
+    (< -1 n 1) (clojure.string/replace (str n) #"0." ".") ; Numeros que hay que corregir
+    :else (str n) ; Numero >= 1 o <= -1
+    )
+)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Despues de cargarse el archivo, debe mostrarse el valor true

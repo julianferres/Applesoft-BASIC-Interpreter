@@ -88,16 +88,6 @@
   (is (= true (variable-string? 'X$)))
   )
 
-; eliminar-cero-decimal: recibe un numero y lo retorna sin ceros
-; decimales no significativos, por ejemplo:
-; user=> (eliminar-cero-decimal 1.5)
-; 1.5
-; user=> (eliminar-cero-decimal 1.50)
-; 1.5
-; user=> (eliminar-cero-decimal 1.0)
-; 1
-; user=> (eliminar-cero-decimal 'A)
-; A
 (deftest test-eliminar-cero-decimal
   (is (= '1.5 (eliminar-cero-decimal 1.5)))
   (is (= '1.5 (eliminar-cero-decimal 1.50)))
@@ -105,6 +95,39 @@
   (is (= '1 (eliminar-cero-decimal 1.0)))
   (is (= '-1 (eliminar-cero-decimal -1.0)))
   (is (= 'A (eliminar-cero-decimal 'A)))
+  )
+
+; eliminar-cero-entero: recibe un simbolo y lo retorna convertido
+; en cadena, omitiendo para los numeros del intervalo (-1..1) el
+; cero a la izquierda del punto, por ejemplo:
+; user=> (eliminar-cero-entero nil)
+; nil
+; user=> (eliminar-cero-entero 'A)
+; "A"
+; user=> (eliminar-cero-entero 0)
+; "0"
+; user=> (eliminar-cero-entero 1.5)
+; "1.5"
+; user=> (eliminar-cero-entero 1)
+; "1"
+; user=> (eliminar-cero-entero -1)
+; "-1"
+; user=> (eliminar-cero-entero -1.5)
+; "-1.5"
+; user=> (eliminar-cero-entero 0.5)
+; ".5"
+; user=> (eliminar-cero-entero -0.5)
+; "-.5"
+(deftest test-eliminar-creo-entero
+  (is (nil? (eliminar-cero-entero nil)))
+  (is (= "A" (eliminar-cero-entero 'A)))
+  (is (= "0" (eliminar-cero-entero 0)))
+  (is (= "1.5" (eliminar-cero-entero 1.5)))
+  (is (= "1" (eliminar-cero-entero 1)))
+  (is (= "-1" (eliminar-cero-entero -1)))
+  (is (= "-1.5" (eliminar-cero-entero -1.5)))
+  (is (= ".5" (eliminar-cero-entero 0.5)))
+  (is (= "-.5" (eliminar-cero-entero -0.5)))
   )
 
 (run-tests)
