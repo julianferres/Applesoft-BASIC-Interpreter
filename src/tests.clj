@@ -82,4 +82,10 @@
   (is (= false (variable-integer? 'X$)))
   )
 
+(deftest test-variable-string?
+  (is (= false (variable-string? 'X)))
+  (is (= false (variable-string? 'X%)))
+  (is (= true (variable-string? 'X$)))
+  )
+
 (run-tests)
