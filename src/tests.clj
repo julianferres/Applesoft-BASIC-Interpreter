@@ -12,15 +12,13 @@
   (is (= true (palabra-reservada? 'LOAD)))
   (is (= true (palabra-reservada? 'SAVE)))
   (is (= true (palabra-reservada? 'LET)))
-  ;(is (= true (palabra-reservada? 'AND)))
-  ;(is (= true (palabra-reservada? 'OR)))
   (is (= true (palabra-reservada? 'INT)))
   (is (= true (palabra-reservada? 'SIN)))
   (is (= true (palabra-reservada? 'ATN)))
   (is (= true (palabra-reservada? 'LEN)))
-  (is (= true (palabra-reservada? 'MID)))
-  (is (= true (palabra-reservada? 'STR)))
-  (is (= true (palabra-reservada? 'CHR)))
+  (is (= true (palabra-reservada? 'MID$)))
+  (is (= true (palabra-reservada? 'STR$)))
+  (is (= true (palabra-reservada? 'CHR$)))
   (is (= true (palabra-reservada? 'ASC)))
   (is (= true (palabra-reservada? 'GOTO)))
   (is (= true (palabra-reservada? 'ON)))
@@ -53,8 +51,30 @@
   (is (= true (operador? '<=)))
   (is (= true (operador? '>)))
   (is (= true (operador? '>=)))
-  ;(is (= true (operador? 'AND)))
-  ;(is (= true (operador? 'OR)))
+  (is (= true (operador? 'AND)))
+  (is (= true (operador? 'OR)))
 )
+
+
+(deftest test-dar-error
+  (is (= nil (dar-error "?ERROR DISK FULL" [:ejecucion-inmediata 4])))
+  ; El output se tiene que chequear por pantalla
+  )
+
+
+; variable-float?: predicado para determinar si un identificador
+; es una variable de punto flotante, por ejemplo:
+; user=> (variable-float? 'X)
+; true
+; user=> (variable-float? 'X%)
+; false
+; user=> (variable-float? 'X$)
+; false
+(deftest test-variable-float?
+  (is (= true (variable-float? 'X)))
+  (is (= false (variable-float? 'X%)))
+  (is (= false (variable-float? 'X$)))
+)
+
 
 (run-tests)

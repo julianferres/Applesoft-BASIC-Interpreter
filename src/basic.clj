@@ -29,12 +29,12 @@
 (declare evaluar)                         ; COMPLETAR
 (declare aplicar)                         ; COMPLETAR
 
-(declare palabra-reservada?)              ; IMPLEMENTAR
-(declare operador?)                       ; IMPLEMENTAR
+(declare palabra-reservada?)              ; IMPLEMENTAR LISTO
+(declare operador?)                       ; IMPLEMENTAR LISTO
 (declare anular-invalidos)                ; IMPLEMENTAR
 (declare cargar-linea)                    ; IMPLEMENTAR
 (declare expandir-nexts)                  ; IMPLEMENTAR
-(declare dar-error)                       ; IMPLEMENTAR
+(declare dar-error)                       ; IMPLEMENTAR LISTO
 (declare variable-float?)                 ; IMPLEMENTAR
 (declare variable-integer?)               ; IMPLEMENTAR
 (declare variable-string?)                ; IMPLEMENTAR
@@ -664,8 +664,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn palabra-reservada? [x]
   (.contains
-    '[REM NEW CLEAR LIST RUN LOAD SAVE LET INT SIN ATN LEN MID STR
-      CHR ASC GOTO ON IF THEN FOR TO STEP NEXT GOSUB RETURN
+    '[REM NEW CLEAR LIST RUN LOAD SAVE LET INT SIN ATN LEN MID$ STR$
+      CHR$ ASC GOTO ON IF THEN FOR TO STEP NEXT GOSUB RETURN
       END INPUT READ RESTORE PRINT] x
     )
   )
@@ -692,7 +692,7 @@
 ; (IF X nil * Y < 12 THEN LET nil X = 0)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn anular-invalidos [sentencia]
-  )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; cargar-linea: recibe una linea de codigo y un ambiente y retorna
@@ -741,7 +741,15 @@
 ; ?ERROR DISK FULL IN 100nil
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn dar-error [cod prog-ptrs]
-  )
+  (print (str (buscar-mensaje cod) ; Parte donde se informa el tipo de errror
+              (if (not= (first prog-ptrs) :ejecucion-inmediata)
+                (str " IN " (first prog-ptrs))
+                ; en el caso de la ejecucion diferida,
+                ; se debe indicar la linea en donde se produjo el error
+                )
+              )
+         )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; variable-float?: predicado para determinar si un identificador
@@ -754,7 +762,10 @@
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn variable-float? [x]
-  )
+  (some? (re-matches #"[A-Z]" (str x)))
+
+  ; re-matches devuelve x si matchea completamente la regex, sino nil
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; variable-integer?: predicado para determinar si un identificador
