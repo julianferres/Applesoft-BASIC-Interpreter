@@ -35,9 +35,9 @@
 (declare cargar-linea)                    ; IMPLEMENTAR
 (declare expandir-nexts)                  ; IMPLEMENTAR
 (declare dar-error)                       ; IMPLEMENTAR LISTO
-(declare variable-float?)                 ; IMPLEMENTAR
-(declare variable-integer?)               ; IMPLEMENTAR
-(declare variable-string?)                ; IMPLEMENTAR
+(declare variable-float?)                 ; IMPLEMENTAR LISTO
+(declare variable-integer?)               ; IMPLEMENTAR LISTO
+(declare variable-string?)                ; IMPLEMENTAR LISTO
 (declare contar-sentencias)               ; IMPLEMENTAR
 (declare buscar-lineas-restantes)         ; IMPLEMENTAR
 (declare continuar-linea)                 ; IMPLEMENTAR
@@ -963,7 +963,13 @@
 ; A
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn eliminar-cero-decimal [n]
+  (cond
+    (number? n) (if (== (int n) n) (int n) n)
+    ; Si el numero es de la forma x.0, se devuelve la representacion entera de x
+    ; en caso contrario clojure se ocupa de sacarle los 0 necesarios a derecha
+    :else n ; Caso en el que no llega un numero, se retorna lo que llego
   )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; eliminar-cero-entero: recibe un simbolo y lo retorna convertido

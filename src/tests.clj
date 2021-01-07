@@ -88,4 +88,23 @@
   (is (= true (variable-string? 'X$)))
   )
 
+; eliminar-cero-decimal: recibe un numero y lo retorna sin ceros
+; decimales no significativos, por ejemplo:
+; user=> (eliminar-cero-decimal 1.5)
+; 1.5
+; user=> (eliminar-cero-decimal 1.50)
+; 1.5
+; user=> (eliminar-cero-decimal 1.0)
+; 1
+; user=> (eliminar-cero-decimal 'A)
+; A
+(deftest test-eliminar-cero-decimal
+  (is (= '1.5 (eliminar-cero-decimal 1.5)))
+  (is (= '1.5 (eliminar-cero-decimal 1.50)))
+  (is (= '-1.5 (eliminar-cero-decimal -1.5000000)))
+  (is (= '1 (eliminar-cero-decimal 1.0)))
+  (is (= '-1 (eliminar-cero-decimal -1.0)))
+  (is (= 'A (eliminar-cero-decimal 'A)))
+  )
+
 (run-tests)
