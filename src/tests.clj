@@ -76,5 +76,10 @@
   (is (= false (variable-float? 'X$)))
 )
 
+(deftest test-variable-integer?
+  (is (= false (variable-integer? 'X)))
+  (is (= true (variable-integer? 'X%)))
+  (is (= false (variable-integer? 'X$)))
+  )
 
 (run-tests)
