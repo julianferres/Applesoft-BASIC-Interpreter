@@ -109,4 +109,17 @@
   (is (= "-.5" (eliminar-cero-entero -0.5)))
   )
 
+(deftest test-expandir-nexts
+  (let [n (list '(PRINT 1) (list 'NEXT 'A (symbol ",") 'B))
+        n2 (list '(PRINT 1) '(PRINT 3))
+        n3 (list '(NEXT A) (list 'NEXT 'A (symbol ",") 'B (symbol ",") 'C))
+        ]
+    (is (= '((PRINT 1) (NEXT A) (NEXT B)) (expandir-nexts n)))
+    (is (= '((PRINT 1) (PRINT 3) (expandir-nexts n2))))
+    (is (= '((NEXT A) (NEXT A) (NEXT B) (NEXT C)) (expandir-nexts n3)))
+  )
+)
+
+
+
 (run-tests)

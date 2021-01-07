@@ -710,6 +710,24 @@
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Funcion auxiliar para expandir los items correspondientes a una sentencia
+; user=> (expandir-next-sentencia '(NEXT I , J))
+; ((NEXT I) (NEXT J))
+; user=> (expandir-next-sentencia '(NEXT I , J))
+; ((NEXT I) (NEXT J))
+(defn expandir-next-sentencia [sentencia]
+  (if (not= (first sentencia) 'NEXT)
+    (list sentencia) ; Si no es de tipo NEXT, la devuelvo como esta, pero adentro de una lista
+    (->> sentencia
+      (next) ; Me saco el primer NEXT
+      (remove #(= % (symbol ","))) ; Elimina los tokens "," (coma); dejando las variables
+      (map list) ; Me armo una lista por cada token que sobrebio
+      (map #(cons 'NEXT %)) ; Prependeo 'NEXT a la lista (se agrega al comienzo)
+    )
+  )
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; expandir-nexts: recibe una lista de sentencias y la devuelve con
 ; las sentencias NEXT compuestas expresadas como sentencias NEXT
 ; simples, por ejemplo:
@@ -721,8 +739,12 @@
 ; ((PRINT 1) (NEXT A) (NEXT B))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn expandir-nexts [n]
+  (reduce
+    (fn [accum sentencia] (concat accum (expandir-next-sentencia sentencia)))
+    () ; acum
+    n
   )
-
+)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; dar-error: recibe un error (codigo o mensaje) y el puntero de
 ; programa, muestra el error correspondiente y retorna nil, por
