@@ -663,29 +663,27 @@
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn palabra-reservada? [x]
-  (or
-   (= x 'REM) (= x 'NEW) (= x 'CLEAR) (= x 'LIST) (= x 'RUN) (= x 'LOAD) (= x 'SAVE) (= x 'LET) (= x 'AND) (= x 'OR)
-   (= x 'INT) (= x 'SIN) (= x 'ATN) (= x 'LEN) (= x 'MID) (= x 'STR) (= x 'CHR) (= x 'ASC) (= x 'GOTO) (= x 'ON)
-   (= x 'IF) (= x 'THEN) (= x 'FOR) (= x 'TO) (= x 'STEP) (= x 'NEXT) (= x 'GOSUB) (= x 'RETURN) (= x 'END)
-   (= x 'INPUT) (= x 'READ) (= x 'RESTORE) (= x 'PRINT)
+  (.contains
+    '[REM NEW CLEAR LIST RUN LOAD SAVE LET INT SIN ATN LEN MID STR
+      CHR ASC GOTO ON IF THEN FOR TO STEP NEXT GOSUB RETURN
+      END INPUT READ RESTORE PRINT] x
+    )
   )
-)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; operador?: predicado para determinar si un identificador es un
 ; operador, por ejemplo:
 ; user=> (operador? '+)
 ; true
-; user=> (operador? (symbol "+"))
+; user=> (operador? (symbol '+"))
 ; true
 ; user=> (operador? (symbol "%"))
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn operador? [x]
-  (or
-    (= x '+)
-    (= x (symbol "+")))
+  (.contains (map symbol ["+" "-" "/" "^" "=" "<>" "<" "<=" ">" ">=" "AND" "OR"]) x)
 )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; anular-invalidos: recibe una lista de simbolos y la retorna con
