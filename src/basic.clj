@@ -33,12 +33,12 @@
 (declare operador?)                       ; IMPLEMENTAR LISTO
 (declare anular-invalidos)                ; IMPLEMENTAR
 (declare cargar-linea)                    ; IMPLEMENTAR
-(declare expandir-nexts)                  ; IMPLEMENTAR
+(declare expandir-nexts)                  ; IMPLEMENTAR LISTO
 (declare dar-error)                       ; IMPLEMENTAR LISTO
 (declare variable-float?)                 ; IMPLEMENTAR LISTO
 (declare variable-integer?)               ; IMPLEMENTAR LISTO
 (declare variable-string?)                ; IMPLEMENTAR LISTO
-(declare contar-sentencias)               ; IMPLEMENTAR
+(declare contar-sentencias)               ; IMPLEMENTAR LISTO
 (declare buscar-lineas-restantes)         ; IMPLEMENTAR
 (declare continuar-linea)                 ; IMPLEMENTAR
 (declare extraer-data)                    ; IMPLEMENTAR
@@ -746,7 +746,7 @@
   )
 )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; dar-error: recibe un error (codigo o mensaje) y el puntero de
+; dar-error: recibe un errofr (codigo o mensaje) y el puntero de
 ; programa, muestra el error correspondiente y retorna nil, por
 ; ejemplo:
 ; user=> (dar-error 16 [:ejecucion-inmediata 4])
@@ -827,8 +827,16 @@
 ; user=> (contar-sentencias 20 [(list '(10 (PRINT X) (PRINT Y)) '(15 (X = X + 1)) (list 20 (list 'NEXT 'I (symbol ",") 'J))) [10 1] [] [] [] 0 {}])
 ; 2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn contar-sentencias [nro-linea amb]
+  (reduce
+    + ; suma de todas las sentencias, las que no coinciden con nro-linea aportan 0
+    (map
+      (fn [sent] (if (= nro-linea (first sent)) (count (expandir-nexts (next sent))) 0))
+      (first amb)
+    )
   )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; buscar-lineas-restantes: recibe un ambiente y retorna la
