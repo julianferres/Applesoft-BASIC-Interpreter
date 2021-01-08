@@ -39,7 +39,7 @@
 (declare variable-integer?)               ; IMPLEMENTAR LISTO
 (declare variable-string?)                ; IMPLEMENTAR LISTO
 (declare contar-sentencias)               ; IMPLEMENTAR LISTO
-(declare buscar-lineas-restantes)         ; IMPLEMENTAR
+(declare buscar-lineas-restantes)         ; IMPLEMENTAR LISTO
 (declare continuar-linea)                 ; IMPLEMENTAR
 (declare extraer-data)                    ; IMPLEMENTAR
 (declare ejecutar-asignacion)             ; IMPLEMENTAR
@@ -870,11 +870,42 @@
 ; user=> (buscar-lineas-restantes [(list '(10 (PRINT X) (PRINT Y)) '(15 (X = X + 1)) (list 20 (list 'NEXT 'I (symbol ",") 'J))) [25 0] [] [] [] 0 {}])
 ; nil
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;; Funcion auxiliar para validar que el numero de linea esté dentro del programa
+(defn nro-linea-existente? [prg nro-linea]
+  (some #(= nro-linea (first %)) prg)
+  ; Chequeo si hay alguna sentencia que comience con la linea indicada en el prog-ptr
+  ; Devuelvo nil si no hay tal numero de linea (o si estoy en ejecucion automatica)
+)
+(defn lineas-mayores-a-nro-linea [prg nro-linea]
+  (->> prg
+       (map (fn [sent] (if (< (first sent) nro-linea) '() sent)))
+       (remove empty?) ; Elimino las listas vacias que me sobran al principio
+  )
+)
+
 (defn buscar-lineas-restantes
   ([amb] (buscar-lineas-restantes (amb 1) (amb 0)))
   ([act prg]
+   (if (nro-linea-existente? prg (first act))
+      (let [nro-linea (first act)
+            sent-restantes (second act)
+            may-o-eq (lineas-mayores-a-nro-linea prg (first act))
+            eq-linea (expandir-nexts (nfirst may-o-eq))]
+            ; Me guardo la primer sentencia (que coincide en nro con (first act))
+            ; Y la expando en caso de que sea next
+        (->> may-o-eq
+             (drop 1) ; Me deshago de la primer linea completa (ya la tengo en eq-linea)
+             (cons (concat (list nro-linea) (take-last sent-restantes eq-linea)))
+             ; Agrego solo las sentencias no vistas en dicha linea, con el numero de linea por delante
+        )
+      )
+      ; Devuelve nil en caso contrario
+    )
    )
-  )
+)
+; TODO: Ver lo de que cuando estan todos los next no se expanden
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; continuar-linea: implementa la sentencia RETURN, retornando una
