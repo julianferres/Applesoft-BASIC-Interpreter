@@ -144,6 +144,13 @@
 
   )
 
-
-
+; sentencias DATA, por ejemplo:
+; user=> (extraer-data '(()))
+; ()
+; user=> (extraer-data (list '(10 (PRINT X) (REM ESTE NO) (DATA 30)) '(20 (DATA HOLA)) (list 100 (list 'DATA 'MUNDO (symbol ",") 10 (symbol ",") 20))))
+; ("HOLA" "MUNDO" 10 20)
+(deftest test-extraer-data
+  (is (= '() (extraer-data '(()))))
+  (is (= '(HOLA MUNDO 10 20) (extraer-data '((10 (PRINT X) (REM ESTE NO) (DATA 30)) (20 (DATA HOLA)) (100 (DATA MUNDO 10 20)))) ))
+  )
 (run-tests)

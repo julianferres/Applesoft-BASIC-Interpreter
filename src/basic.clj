@@ -41,7 +41,7 @@
 (declare contar-sentencias)               ; IMPLEMENTAR LISTO
 (declare buscar-lineas-restantes)         ; IMPLEMENTAR LISTO
 (declare continuar-linea)                 ; IMPLEMENTAR
-(declare extraer-data)                    ; IMPLEMENTAR
+(declare extraer-data)                    ; IMPLEMENTAR LISTO
 (declare ejecutar-asignacion)             ; IMPLEMENTAR
 (declare preprocesar-expresion)           ; IMPLEMENTAR
 (declare desambiguar)                     ; IMPLEMENTAR
@@ -930,7 +930,32 @@
 ; user=> (extraer-data (list '(10 (PRINT X) (REM ESTE NO) (DATA 30)) '(20 (DATA HOLA)) (list 100 (list 'DATA 'MUNDO (symbol ",") 10 (symbol ",") 20))))
 ; ("HOLA" "MUNDO" 10 20)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Funcion auxiliar para procesar de a una linea a la vez la data que ingresa
+(defn filtrar-pos-rem [sentencia]
+  (let [primer-rem (.indexOf (map #(= (first %) 'REM) sentencia) true)
+        primer-rem-val (if (> primer-rem -1) primer-rem (count sentencia)) ; Me quedo con toda la sentencia si no hay REM
+        ]
+    (->> sentencia
+         (keep-indexed #(if (< %1 primer-rem-val) %2)) ; Me quedo con los que aparecen antes del REM
+      )
+    )
+  )
+
+(defn extraer-data-linea [linea]
+  (reduce (
+            fn [accum, sent] (concat accum (if (= (first sent) 'DATA) (next sent)))
+            )
+          ()
+          linea
+          )
+  )
+
 (defn extraer-data [prg]
+  (reduce (fn [accum, linea] (concat accum (extraer-data-linea (filtrar-pos-rem (next linea)))))
+          ()
+          prg
+    )
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
