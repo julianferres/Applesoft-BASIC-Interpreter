@@ -74,18 +74,21 @@
   (is (= true (variable-float? 'X)))
   (is (= false (variable-float? 'X%)))
   (is (= false (variable-float? 'X$)))
+  (is (= false (variable-float? "X$")))
 )
 
 (deftest test-variable-integer?
   (is (= false (variable-integer? 'X)))
   (is (= true (variable-integer? 'X%)))
   (is (= false (variable-integer? 'X$)))
+  (is (= false (variable-integer? "X$")))
   )
 
 (deftest test-variable-string?
   (is (= false (variable-string? 'X)))
   (is (= false (variable-string? 'X%)))
   (is (= true (variable-string? 'X$)))
+  (is (= false (variable-string? "X$")))
   )
 
 (deftest test-eliminar-cero-decimal
