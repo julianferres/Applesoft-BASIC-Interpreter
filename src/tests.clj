@@ -147,13 +147,24 @@
 
   )
 
-; sentencias DATA, por ejemplo:
-; user=> (extraer-data '(()))
-; ()
-; user=> (extraer-data (list '(10 (PRINT X) (REM ESTE NO) (DATA 30)) '(20 (DATA HOLA)) (list 100 (list 'DATA 'MUNDO (symbol ",") 10 (symbol ",") 20))))
-; ("HOLA" "MUNDO" 10 20)
 (deftest test-extraer-data
   (is (= '() (extraer-data '(()))))
   (is (= '(HOLA MUNDO 10 20) (extraer-data '((10 (PRINT X) (REM ESTE NO) (DATA 30)) (20 (DATA HOLA)) (100 (DATA MUNDO 10 20)))) ))
   )
+
+; preprocesar-expresion: recibe una expresion y la retorna con
+; las variables reemplazadas por sus valores y el punto por el
+; cero, por ejemplo:
+; user=> (preprocesar-expresion '(X$ + " MUNDO" + Z$) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA"}])
+; ("HOLA" + " MUNDO" + "")
+; user=> (preprocesar-expresion '(X + . / Y% * Z) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 5 Y% 2}])
+; (5 + 0 / 2 * 0)
+
+(deftest test-preprocesar-expresion
+  (is (= '("HOLA" + " MUNDO" + "") (preprocesar-expresion '(X$ + " MUNDO" + Z$) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA"}])))
+  (is (= '(5 + 0 / 2 * 0) (preprocesar-expresion '(X + . / Y% * Z) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 5 Y% 2}])))
+  (is (= '("Y%") (preprocesar-expresion '("Y%") ['() [10 1] [] [] [] 0 '{Y% 2}] )))
+  )
+
+
 (run-tests)

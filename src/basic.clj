@@ -983,7 +983,19 @@
 ; user=> (preprocesar-expresion '(X + . / Y% * Z) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 5 Y% 2}])
 ; (5 + 0 / 2 * 0)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defn variables [amb] (amb 6)) ; pequeña funcion auxiliar que dado el ambiente devuelve las variables del mismo
+
 (defn preprocesar-expresion [expr amb]
+  (map (fn [token]
+         (cond
+           (= '. token) 0
+           (variable-integer? token) (get (variables amb) token 0)
+           (variable-float? token) (get (variables amb) token 0)
+           (variable-string? token) (get (variables amb) token "")
+           :else token
+           )
+         )
+       expr)
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
