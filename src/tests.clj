@@ -152,19 +152,31 @@
   (is (= '(HOLA MUNDO 10 20) (extraer-data '((10 (PRINT X) (REM ESTE NO) (DATA 30)) (20 (DATA HOLA)) (100 (DATA MUNDO 10 20)))) ))
   )
 
-; preprocesar-expresion: recibe una expresion y la retorna con
-; las variables reemplazadas por sus valores y el punto por el
-; cero, por ejemplo:
-; user=> (preprocesar-expresion '(X$ + " MUNDO" + Z$) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA"}])
-; ("HOLA" + " MUNDO" + "")
-; user=> (preprocesar-expresion '(X + . / Y% * Z) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 5 Y% 2}])
-; (5 + 0 / 2 * 0)
-
 (deftest test-preprocesar-expresion
   (is (= '("HOLA" + " MUNDO" + "") (preprocesar-expresion '(X$ + " MUNDO" + Z$) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA"}])))
   (is (= '(5 + 0 / 2 * 0) (preprocesar-expresion '(X + . / Y% * Z) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 5 Y% 2}])))
   (is (= '("Y%") (preprocesar-expresion '("Y%") ['() [10 1] [] [] [] 0 '{Y% 2}] )))
   )
+
+; desambiguar: recibe un expresion y la retorna sin los + unarios,
+; con los - unarios reemplazados por -u y los MID$ ternarios
+; reemplazados por MID3$, por ejemplo:
+; user=> (desambiguar (list '- 2 '* (symbol "(") '- 3 '+ 5 '- (symbol "(") '+ 2 '/ 7 (symbol ")") (symbol ")")))
+; (-u 2 * ( -u 3 + 5 - ( 2 / 7 ) ))
+; user=> (desambiguar (list 'MID$ (symbol "(") 1 (symbol ",") 2 (symbol ")")))
+; (MID$ ( 1 , 2 ))
+; user=> (desambiguar (list 'MID$ (symbol "(") 1 (symbol ",") 2 (symbol ",") 3 (symbol ")")))
+; (MID3$ ( 1 , 2 , 3 ))
+; user=> (desambiguar (list 'MID$ (symbol "(") 1 (symbol ",") '- 2 '+ 'K (symbol ",") 3 (symbol ")")))
+; (MID3$ ( 1 , -u 2 + K , 3 ))
+
+(deftest test-desambiguar
+  (is (= (list '-u '2 '* (symbol "(") '-u '3 '+ '5 '- (symbol "(") '2 (symbol "/") '7 (symbol ")") (symbol ")")) (desambiguar (list '- 2 '* (symbol "(") '- 3 '+ 5 '- (symbol "(") '+ 2 '/ 7 (symbol ")") (symbol ")")))))
+  (is (= (list 'MID$ (symbol "(") 1 (symbol ",") 2 (symbol ")")) (desambiguar (list 'MID$ (symbol "(") 1 (symbol ",") 2 (symbol ")")))))
+  (is (= (list 'MID3$ (symbol "(") 1 (symbol ",") 2 (symbol ",") 3 (symbol ")")) (desambiguar (list 'MID$ (symbol "(") 1 (symbol ",") 2 (symbol ",") 3 (symbol ")")))))
+  (is (= (list 'MID3$ (symbol "(") 1 (symbol ",") '-u 2 '+ 'K (symbol ",") 3 (symbol ")")) (desambiguar (list 'MID$ (symbol "(") 1 (symbol ",") '- 2 '+ 'K (symbol ",") 3 (symbol ")")))))
+  )
+
 
 
 (run-tests)
