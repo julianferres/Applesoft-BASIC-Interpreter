@@ -32,7 +32,7 @@
 (declare palabra-reservada?)              ; IMPLEMENTAR LISTO
 (declare operador?)                       ; IMPLEMENTAR LISTO
 (declare anular-invalidos)                ; IMPLEMENTAR
-(declare cargar-linea)                    ; IMPLEMENTAR
+(declare cargar-linea)                    ; IMPLEMENTAR LISTO
 (declare expandir-nexts)                  ; IMPLEMENTAR LISTO
 (declare dar-error)                       ; IMPLEMENTAR LISTO
 (declare variable-float?)                 ; IMPLEMENTAR LISTO
@@ -681,7 +681,7 @@
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn operador? [x]
-  (.contains (map symbol ["+" "-" "/" "^" "=" "<>" "<" "<=" ">" ">=" "AND" "OR"]) x)
+  (.contains (map symbol ["+" "-" "*" "/" "^" "=" "<>" "<" "<=" ">" ">=" "AND" "OR"]) x)
 )
 
 
@@ -707,6 +707,17 @@
 ; [((10 (PRINT X)) (15 (X = X - 1)) (20 (X = 100))) [:ejecucion-inmediata 0] [] [] [] 0 {}]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn cargar-linea [linea amb]
+  (let [prog-mem (first amb)
+        lineas-orden (into (sorted-map) (zipmap (map first prog-mem) (map next prog-mem)))
+        lineas-actual (assoc lineas-orden (first linea) (next linea))
+        nuevas-lineas (map #(concat (list (key %)) (val %)) lineas-actual)
+        ]
+    (-> amb
+         (next)
+         (conj nuevas-lineas)
+         (vec)
+         )
+    )
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -948,6 +959,7 @@
             )
           ()
           linea
+
           )
   )
 
@@ -971,9 +983,15 @@
 ; user=> (ejecutar-asignacion '(X$ = X$ + " MUNDO") ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA"}])
 ; [((10 (PRINT X))) [10 1] [] [] [] 0 {X$ "HOLA MUNDO"}]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 (defn ejecutar-asignacion [sentencia amb]
   ; Deberia verificar que no se cumpliera, pero supongo que siempre viene la forma deseada
-
+  ;(let [vars (last amb)
+  ;      updated-vars (assoc vars (first sentencia) (aplicar (drop 2 sentencia)))
+  ;      amb-sin-vars (pop amb)]
+  ;  (concat amb-sin-vars (list updated-vars)) ;TODO: Ver como se podra evaluar la parte de la derecha, pareciera que no puede venir cualquier cosa
+  ;  )
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1053,6 +1071,10 @@
 ; 3
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn aridad [token]
+  (cond
+    (operador? token) 2
+    (.contains '(EXIT THEN) token) 0
+    )
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
