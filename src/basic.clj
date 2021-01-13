@@ -31,7 +31,7 @@
 
 (declare palabra-reservada?)              ; IMPLEMENTAR LISTO
 (declare operador?)                       ; IMPLEMENTAR LISTO
-(declare anular-invalidos)                ; IMPLEMENTAR
+(declare anular-invalidos)                ; IMPLEMENTAR LISTO
 (declare cargar-linea)                    ; IMPLEMENTAR LISTO
 (declare expandir-nexts)                  ; IMPLEMENTAR LISTO
 (declare dar-error)                       ; IMPLEMENTAR LISTO
@@ -666,7 +666,7 @@
   (.contains
     '[REM NEW CLEAR LIST RUN LOAD SAVE LET INT SIN ATN LEN MID$ STR$
       CHR$ ASC GOTO ON IF THEN FOR TO STEP NEXT GOSUB RETURN
-      END INPUT READ RESTORE PRINT] x
+      END INPUT READ RESTORE PRINT ?] x
     )
   )
 
@@ -691,7 +691,18 @@
 ; user=> (anular-invalidos '(IF X & * Y < 12 THEN LET ! X = 0))
 ; (IF X nil * Y < 12 THEN LET nil X = 0)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defn validar-token [token]
+  (if (or
+        (variable-string? token) (variable-float? token) (variable-integer? token)
+        (palabra-reservada? token) (operador? token)
+        (number? token) (string? token)
+        )
+    token
+    )
+  )
+
 (defn anular-invalidos [sentencia]
+  (map validar-token sentencia)
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

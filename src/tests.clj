@@ -172,5 +172,10 @@
   (is (= ['((10 (PRINT X)) (15 (X = X - 1)) (20 (X = 100))) [:ejecucion-inmediata 0] [] [] [] 0 {}] (cargar-linea '(15 (X = X - 1)) ['((10 (PRINT X)) (15 (X = X + 1)) (20 (X = 100))) [:ejecucion-inmediata 0] [] [] [] 0 {}])))
   )
 
+(deftest test-anular-invalidos
+  (is (= '(IF X nil * Y < 12 THEN LET nil X = 0) (anular-invalidos '(IF X & * Y < 12 THEN LET ! X = 0))))
+  (is (= '(X$ = X$ + " MUNDO") (anular-invalidos '(X$ = X$ + " MUNDO"))))
+  (is (= '(X$ = X$ + " MUNDO" ? nil nil) (anular-invalidos '(X$ = X$ + " MUNDO" ? & &?))))
+  )
 
 (run-tests)
