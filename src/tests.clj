@@ -178,4 +178,22 @@
   (is (= '(X$ = X$ + " MUNDO" ? nil nil) (anular-invalidos '(X$ = X$ + " MUNDO" ? & &?))))
   )
 
+(deftest test-precedencia
+  (is (= (precedencia 'OR) 1))
+  (is (= (precedencia 'AND) 2))
+  (is (= (precedencia '*) 6))
+  (is (= (precedencia '-u) 8))
+  (is (= (precedencia 'MID$) 9))
+
+  (is (= (precedencia (symbol "(")) 10))
+  (is (= (precedencia (symbol ")")) 10))
+  (is (= (precedencia 'MID3$) 9))
+  (is (= (precedencia (symbol "^")) 7))
+  (is (= (precedencia '+) 5))
+  (is (= (precedencia '-) 5))
+  (is (= (precedencia '=) 4))
+  (is (= (precedencia '<>) 4))
+  (is (= (precedencia 'NOT) 3))
+)
+
 (run-tests)

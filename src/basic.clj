@@ -1060,11 +1060,25 @@
 ; user=> (precedencia '*)
 ; 6
 ; user=> (precedencia '-u)
-; 7
+; 8 !!!!! Antes era 7 pero estaba mal la referencia con respecto a ^
 ; user=> (precedencia 'MID$)
 ; 9
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn precedencia [token]
+  (cond
+    (.contains (map symbol ["(" ")"]) token) 10
+    (.contains (map symbol ["MID$", "MID3$"]) token) 9
+    (= token '-u) 8
+    (= (symbol "^") token) 7
+    (.contains (map symbol ["*" "/"]) token) 6
+    (.contains (map symbol ["+" "-"]) token) 5
+    (.contains (map symbol ["=", "<>", "><", "<", ">", "<=", "=<", ">=", "=>"]) token) 4
+    (= token 'NOT) 3
+    (= token 'AND) 2
+    (= token 'OR) 1
+    :else 0
+    )
+
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1085,6 +1099,8 @@
   (cond
     (operador? token) 2
     (.contains '(EXIT THEN) token) 0
+    ; TODO: VER TEMA DE ARIDAD PORQUE SI ESTA MAL PUESTA HACE DESASTRES POR TODO EL CODIGO
+    :else 0
     )
   )
 
