@@ -45,7 +45,7 @@
 (declare ejecutar-asignacion)             ; IMPLEMENTAR
 (declare preprocesar-expresion)           ; IMPLEMENTAR LISTO
 (declare desambiguar)                     ; IMPLEMENTAR LISTO
-(declare precedencia)                     ; IMPLEMENTAR
+(declare precedencia)                     ; IMPLEMENTAR LISTO
 (declare aridad)                          ; IMPLEMENTAR
 (declare eliminar-cero-decimal)           ; IMPLEMENTAR LISTO
 (declare eliminar-cero-entero)            ; IMPLEMENTAR LISTO
