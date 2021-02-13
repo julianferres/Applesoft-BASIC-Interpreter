@@ -692,13 +692,9 @@
 ; (IF X nil * Y < 12 THEN LET nil X = 0)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn validar-token [token]
-  (if (or
-        (variable-string? token) (variable-float? token) (variable-integer? token)
-        (palabra-reservada? token) (operador? token)
-        (number? token) (string? token)
-        )
+  (if (not (.contains (map symbol ["&", "!", "{", "}", "[", "]"]) token))
     token
-    )
+    ) ; Por defecto retornara nil
   )
 
 (defn anular-invalidos [sentencia]

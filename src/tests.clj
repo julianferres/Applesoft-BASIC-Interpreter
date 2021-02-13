@@ -175,7 +175,7 @@
 (deftest test-anular-invalidos
   (is (= '(IF X nil * Y < 12 THEN LET nil X = 0) (anular-invalidos '(IF X & * Y < 12 THEN LET ! X = 0))))
   (is (= '(X$ = X$ + " MUNDO") (anular-invalidos '(X$ = X$ + " MUNDO"))))
-  (is (= '(X$ = X$ + " MUNDO" ? nil nil) (anular-invalidos '(X$ = X$ + " MUNDO" ? & &?))))
+  (is (= '(X$ = X$ + " MUNDO" ? nil) (anular-invalidos '(X$ = X$ + " MUNDO" ? &))))
   )
 
 (deftest test-precedencia
