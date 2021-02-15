@@ -40,7 +40,7 @@
 (declare variable-string?)                ; IMPLEMENTAR LISTO
 (declare contar-sentencias)               ; IMPLEMENTAR LISTO
 (declare buscar-lineas-restantes)         ; IMPLEMENTAR LISTO
-(declare continuar-linea)                 ; IMPLEMENTAR
+(declare continuar-linea)                 ; IMPLEMENTAR LISTO
 (declare extraer-data)                    ; IMPLEMENTAR LISTO
 (declare ejecutar-asignacion)             ; IMPLEMENTAR LISTO
 (declare preprocesar-expresion)           ; IMPLEMENTAR LISTO
@@ -936,7 +936,23 @@
 ; user=> (continuar-linea [(list '(10 (PRINT X)) '(15 (GOSUB 100) (X = X + 1)) (list 20 (list 'NEXT 'I (symbol ",") 'J))) [20 3] [[15 2]] [] [] 0 {}])
 ; [:omitir-restante [((10 (PRINT X)) (15 (GOSUB 100) (X = X + 1)) (20 (NEXT I , J))) [15 1] [] [] [] 0 {}]]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defn get-gosub-stack [amb] (amb 2)) ; Auxiliar para tener el obtener el stack de gosubs
+; [(prog-mem)  [prog-ptrs]  [gosub-return-stack]  [for-next-stack]  [data-mem]  data-ptr  {var-mem}]
+(defn get-prog-ptrs [amb] (amb 1))
+
 (defn continuar-linea [amb]
+  (if (= (count (get-gosub-stack amb)) 0)
+    [(dar-error 22 (get-prog-ptrs amb)) amb] ; No hay donde retornar
+    (let [gosub-stack (get-gosub-stack amb),
+          gosub-first-ptr (first gosub-stack)
+          next-prog-ptr (assoc gosub-first-ptr 1 (- (second gosub-first-ptr) 1))
+          next-gosub-stack (subvec gosub-stack 1 (count gosub-stack))
+          ]
+      [:omitir-restante (assoc amb 1 next-prog-ptr 2 next-gosub-stack)]
+      ; Reemplazo con el nuevo puntero en prog-ptrs
+      ; Y saco el primer puntero de gosub-return-stack
+      )
+    )
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -995,7 +1011,6 @@
 (defn ejecutar-asignacion [sentencia amb]
   ; Deberia verificar que no se cumpliera, pero supongo que siempre viene la forma deseada ( variable = expresion-a-calcular )
   (let [vars (last amb)
-        debug (print (calcular-expresion (drop 2 sentencia) amb))
         updated-vars (assoc vars (first sentencia) (calcular-expresion (drop 2 sentencia) amb))
         amb-sin-vars (pop amb)] ; Tengo que hacer eso porque son inmutables
     (concat amb-sin-vars (list updated-vars)) ;TODO: Ver como se podra evaluar la parte de la derecha, pareciera que no puede venir cualquier cosa
@@ -1074,7 +1089,7 @@
     (= token 'AND) 2
     (= token 'OR) 1
     (= token (symbol ",")) 0
-    :else 11
+    :else 11 ; Le doy precedencia mas alta al resto de las funciones y numeros
     )
 
   )
