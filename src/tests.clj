@@ -39,7 +39,6 @@
   (is (= false (palabra-reservada? 'DIEGO)))
   )
 
-
 (deftest test-operador?
   (is (= true (operador? '+)))
   (is (= true (operador? '-)))
@@ -54,7 +53,6 @@
   (is (= true (operador? 'AND)))
   (is (= true (operador? 'OR)))
 )
-
 
 (deftest test-dar-error
   (is (= nil (dar-error "?ERROR DISK FULL" [:ejecucion-inmediata 4])))
@@ -196,6 +194,16 @@
 
   (is (= (aridad 'ASC) 1))
   (is (= (aridad 'CHR$) 1))
+  )
+
+
+; user=> (ejecutar-asignacion '(X$ = X$ + " MUNDO") ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA"}])
+; [((10 (PRINT X))) [10 1] [] [] [] 0 {X$ "HOLA MUNDO"}]
+(deftest test-ejecutar-asignacion
+  (is (= (ejecutar-asignacion '(X = 5) ['((10 (PRINT X))) [10 1] [] [] [] 0 {}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 5}]))
+  (is (= (ejecutar-asignacion '(X = 5) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 2}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 5}]))
+  (is (= (ejecutar-asignacion '(X = X + 1) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 2}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 3}]))
+  (is (= (ejecutar-asignacion '(X$ = X$ + " MUNDO") ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA"}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA MUNDO"}]))
   )
 
 (run-tests)
