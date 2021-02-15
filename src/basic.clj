@@ -46,7 +46,7 @@
 (declare preprocesar-expresion)           ; IMPLEMENTAR LISTO
 (declare desambiguar)                     ; IMPLEMENTAR LISTO
 (declare precedencia)                     ; IMPLEMENTAR LISTO
-(declare aridad)                          ; IMPLEMENTAR
+(declare aridad)                          ; IMPLEMENTAR LISTO
 (declare eliminar-cero-decimal)           ; IMPLEMENTAR LISTO
 (declare eliminar-cero-entero)            ; IMPLEMENTAR LISTO
 
@@ -993,7 +993,7 @@
 
 
 (defn ejecutar-asignacion [sentencia amb]
-  ; Deberia verificar que no se cumpliera, pero supongo que siempre viene la forma deseada
+  ;Deberia verificar que no se cumpliera, pero supongo que siempre viene la forma deseada
   ;(let [vars (last amb)
   ;      updated-vars (assoc vars (first sentencia) (aplicar (drop 2 sentencia)))
   ;      amb-sin-vars (pop amb)]
