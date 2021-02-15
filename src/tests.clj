@@ -61,15 +61,6 @@
   ; El output se tiene que chequear por pantalla
   )
 
-
-; variable-float?: predicado para determinar si un identificador
-; es una variable de punto flotante, por ejemplo:
-; user=> (variable-float? 'X)
-; true
-; user=> (variable-float? 'X%)
-; false
-; user=> (variable-float? 'X$)
-; false
 (deftest test-variable-float?
   (is (= true (variable-float? 'X)))
   (is (= false (variable-float? 'X%)))
@@ -195,5 +186,16 @@
   (is (= (precedencia '<>) 4))
   (is (= (precedencia 'NOT) 3))
 )
+
+(deftest test-aridad
+  (is (= (aridad 'THEN) 0))
+  (is (= (aridad 'SIN) 1))
+  (is (= (aridad '*) 2))
+  (is (= (aridad 'MID$) 2))
+  (is (= (aridad 'MID3$) 3))
+
+  (is (= (aridad 'ASC) 1))
+  (is (= (aridad 'CHR$) 1))
+  )
 
 (run-tests)

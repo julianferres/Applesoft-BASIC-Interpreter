@@ -1092,10 +1092,13 @@
 ; 3
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn aridad [token]
-  (cond
+  (cond ; Utilice https://fjkraan.home.xs4all.nl/comp/apple2faq/app2asoftfaq.html
     (operador? token) 2
-    (.contains '(EXIT THEN) token) 0
-    ; TODO: VER TEMA DE ARIDAD PORQUE SI ESTA MAL PUESTA HACE DESASTRES POR TODO EL CODIGO
+    (.contains '(ATN INT SIN) token) 1 ; Numericas
+    (.contains '(ASC CHR$ STR$) token) 1; Conversion de tipos
+    (= 'LEN token) 1; Cadenas de caracteres
+    (= 'MID$ token) 2 ; token de tipo MID$
+    (= 'MID3$ token) 3
     :else 0
     )
   )
