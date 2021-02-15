@@ -199,8 +199,8 @@
 (deftest test-ejecutar-asignacion
   (is (= (ejecutar-asignacion '(X = 5) ['((10 (PRINT X))) [10 1] [] [] [] 0 {}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 5}]))
   (is (= (ejecutar-asignacion '(X = 5) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 2}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 5}]))
-  ;(is (= (ejecutar-asignacion '(X = X + 1) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 2}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 3}]))
-  ;(is (= (ejecutar-asignacion '(X$ = X$ + " MUNDO") ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA"}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA MUNDO"}]))
+  (is (= (ejecutar-asignacion '(X = X + 1) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 2}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X 3}]))
+  (is (= (ejecutar-asignacion '(X$ = X$ + " MUNDO") ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA"}]) ['((10 (PRINT X))) [10 1] [] [] [] 0 '{X$ "HOLA MUNDO"}]))
   ; TODO: Activar estos dos ultimos tests cuando este solucionado lo del shunting-yard
   )
 

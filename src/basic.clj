@@ -1073,7 +1073,8 @@
     (= token 'NOT) 3
     (= token 'AND) 2
     (= token 'OR) 1
-    :else 0
+    (= token (symbol ",")) 0
+    :else 11
     )
 
   )
