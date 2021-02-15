@@ -42,7 +42,7 @@
 (declare buscar-lineas-restantes)         ; IMPLEMENTAR LISTO
 (declare continuar-linea)                 ; IMPLEMENTAR
 (declare extraer-data)                    ; IMPLEMENTAR LISTO
-(declare ejecutar-asignacion)             ; IMPLEMENTAR
+(declare ejecutar-asignacion)             ; IMPLEMENTAR LISTO
 (declare preprocesar-expresion)           ; IMPLEMENTAR LISTO
 (declare desambiguar)                     ; IMPLEMENTAR LISTO
 (declare precedencia)                     ; IMPLEMENTAR LISTO
@@ -360,7 +360,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn calcular-expresion [expr amb]
   (calcular-rpn (shunting-yard (desambiguar (preprocesar-expresion expr amb))) (amb 1))
-  )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; desambiguar-mas-menos: recibe una expresion y la retorna sin
@@ -993,12 +993,13 @@
 
 
 (defn ejecutar-asignacion [sentencia amb]
-  ;Deberia verificar que no se cumpliera, pero supongo que siempre viene la forma deseada
-  ;(let [vars (last amb)
-  ;      updated-vars (assoc vars (first sentencia) (aplicar (drop 2 sentencia)))
-  ;      amb-sin-vars (pop amb)]
-  ;  (concat amb-sin-vars (list updated-vars)) ;TODO: Ver como se podra evaluar la parte de la derecha, pareciera que no puede venir cualquier cosa
-  ;  )
+  ; Deberia verificar que no se cumpliera, pero supongo que siempre viene la forma deseada ( variable = expresion-a-calcular )
+  (let [vars (last amb)
+        debug (print (calcular-expresion (drop 2 sentencia) amb))
+        updated-vars (assoc vars (first sentencia) (calcular-expresion (drop 2 sentencia) amb))
+        amb-sin-vars (pop amb)] ; Tengo que hacer eso porque son inmutables
+    (concat amb-sin-vars (list updated-vars)) ;TODO: Ver como se podra evaluar la parte de la derecha, pareciera que no puede venir cualquier cosa
+    )
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1013,7 +1014,7 @@
 (defn variables [amb] (amb 6)) ; pequeña funcion auxiliar que dado el ambiente devuelve las variables del mismo
 
 (defn preprocesar-expresion [expr amb]
-  (map (fn [token]
+  (apply list (map (fn [token]
          (cond
            (= '. token) 0
            (variable-integer? token) (get (variables amb) token 0)
@@ -1022,7 +1023,7 @@
            :else token
            )
          )
-       expr)
+       expr))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1039,7 +1040,7 @@
 ; (MID3$ ( 1 , -u 2 + K , 3 ))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn desambiguar [expr]
-  (->> expr
+  (-> expr
        (desambiguar-comas)
        (desambiguar-mas-menos)
        (desambiguar-mid)
