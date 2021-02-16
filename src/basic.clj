@@ -518,6 +518,15 @@
 ; A PARTIR DE ESTE PUNTO HAY QUE COMPLETAR LAS FUNCIONES DADAS ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn escape-comillas [token]
+  (if (string? token)
+    (str "\"" token "\"")
+    token
+    ))
+(defn join-espacio [col]
+  (clojure.string/join " " (map escape-comillas col))
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; evaluar: ejecuta una sentencia y retorna una dupla (un vector)
 ; con un resultado (usado luego por evaluar-linea) y un ambiente
@@ -600,6 +609,16 @@
       NEXT (if (<= (count (next sentencia)) 1)
              (retornar-al-for amb (fnext sentencia))
              (do (dar-error 16 (amb 1)) [nil amb]))  ; Syntax error
+      LIST (let [lineas
+                 (map #(clojure.string/join " "
+                              [(first %) (clojure.string/join " : "
+                                          (map join-espacio (map escape-comillas (next %))))
+                               ])
+                        (amb 0))
+                 programa (clojure.string/join "\n" lineas)
+                 imprimo-programa (print programa)
+                 ]
+             [:sin-errores amb])
       (if (= (second sentencia) '=)
         (let [resu (ejecutar-asignacion sentencia amb)]
           (if (nil? resu)
