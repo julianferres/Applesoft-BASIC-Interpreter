@@ -640,7 +640,17 @@
        -u (- operando)
        LEN (count operando)
        STR$ (if (not (number? operando)) (dar-error 163 nro-linea) (eliminar-cero-entero operando)) ; Type mismatch error
-       CHR$ (if (or (< operando 0) (> operando 255)) (dar-error 53 nro-linea) (str (char operando)))))) ; Illegal quantity error
+       CHR$ (if (or (< operando 0) (> operando 255)) (dar-error 53 nro-linea) (str (char operando))) ; Illegal quantity error
+
+       ATN (if (not (number? operando)) (dar-error 163 nro-linea) (Math/atan operando))
+       SIN (if (not (number? operando)) (dar-error 163 nro-linea) (Math/sin operando))
+       INT (if (not (number? operando)) (dar-error 163 nro-linea) (int operando))
+       ASC (if (not (string? operando)) (dar-error 163 nro-linea)
+                                        (if (= (count operando) 0) (dar-error 53 nro-linea)
+                                                                   (let [first-char-ascii (int (first operando))]
+                                                                     (if (= first-char-ascii 0) (dar-error 16 nro-linea) first-char-ascii))))
+       )))
+
   ([operador operando1 operando2 nro-linea]
    (if (or (nil? operando1) (nil? operando2))
      (dar-error 16 nro-linea)  ; Syntax error
@@ -669,7 +679,11 @@
          + (if (and (string? operando1) (string? operando2))
              (str operando1 operando2)
              (+ operando1 operando2))
-         / (if (= operando2 0) (dar-error 133 nro-linea) (/ operando1 operando2))  ; Division by zero error
+         * (if (or (string? operando1) (string? operando2))
+             (dar-error 16 nro-linea)
+             (* operando1 operando2)
+             )
+         / (if (= operando2 0) (dar-error 133 nro-linea) (float (/ operando1 operando2)))  ; Division by zero error TODO: Preguntar si se puede poner el float
          AND (let [op1 (+ 0 operando1), op2 (+ 0 operando2)] (if (and (not= op1 0) (not= op2 0)) 1 0))
          OR (let [op1 (+ 0 operando1), op2 (+ 0 operando2)] (if (or (not= op1 0) (not= op2 0)) 1 0))
          MID$ (if (< operando2 1)
@@ -1049,7 +1063,7 @@
   (let [vars (last amb)
         updated-vars (assoc vars (first sentencia) (calcular-expresion (drop 2 sentencia) amb))
         amb-sin-vars (pop amb)] ; Tengo que hacer eso porque son inmutables
-    (concat amb-sin-vars (list updated-vars)) ;TODO: Ver como se podra evaluar la parte de la derecha, pareciera que no puede venir cualquier cosa
+    (vec (concat amb-sin-vars (list updated-vars))) ;TODO: Ver como se podra evaluar la parte de la derecha, pareciera que no puede venir cualquier cosa
     )
   )
 
@@ -1114,6 +1128,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn precedencia [token]
   (cond
+    (number? token) 20 ; Le doy la mejor prioridad a los numeros
     (.contains (map symbol ["(" ")"]) token) 10
     (.contains (map symbol ["MID$", "MID3$"]) token) 9
     (= token '-u) 8
@@ -1205,7 +1220,7 @@
     (nil? n) n
     (not (number? n)) (str n)
     ; A esta altura ya quedan solo numeros
-    (< -1 n 1) (clojure.string/replace (str n) #"0." ".") ; Numeros que hay que corregir
+    (< -1 n 1) (clojure.string/replace (str n) #"0\." ".") ; Numeros que hay que corregir
     :else (str n) ; Numero >= 1 o <= -1
     )
 )
