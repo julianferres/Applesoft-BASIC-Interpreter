@@ -655,6 +655,7 @@
              (+ operando1 operando2))
          / (if (= operando2 0) (dar-error 133 nro-linea) (/ operando1 operando2))  ; Division by zero error
          AND (let [op1 (+ 0 operando1), op2 (+ 0 operando2)] (if (and (not= op1 0) (not= op2 0)) 1 0))
+         OR (let [op1 (+ 0 operando1), op2 (+ 0 operando2)] (if (or (not= op1 0) (not= op2 0)) 1 0))
          MID$ (if (< operando2 1)
                 (dar-error 53 nro-linea)  ; Illegal quantity error
                 (let [ini (dec operando2)] (if (>= ini (count operando1)) "" (subs operando1 ini))))))))
