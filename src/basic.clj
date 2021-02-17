@@ -650,6 +650,22 @@
          = (if (and (string? operando1) (string? operando2))
              (if (= operando1 operando2) 1 0)
              (if (= (+ 0 operando1) (+ 0 operando2)) 1 0))
+         <> (if (and (string? operando1) (string? operando2))
+             (if (not= operando1 operando2) 1 0)
+             (if (not= (+ 0 operando1) (+ 0 operando2)) 1 0))
+         < (if (or (string? operando1) (string? operando2))
+              (dar-error 16 nro-linea) ; No hay orden entre las strings
+              (if (< (+ 0 operando1) (+ 0 operando2)) 1 0))
+         > (if (or (string? operando1) (string? operando2))
+             (dar-error 16 nro-linea) ; No hay orden entre las strings
+             (if (> (+ 0 operando1) (+ 0 operando2)) 1 0))
+         <= (if (or (string? operando1) (string? operando2))
+             (dar-error 16 nro-linea) ; No hay orden entre las strings
+             (if (<= (+ 0 operando1) (+ 0 operando2)) 1 0))
+         >= (if (or (string? operando1) (string? operando2))
+             (dar-error 16 nro-linea) ; No hay orden entre las strings
+             (if (>= (+ 0 operando1) (+ 0 operando2)) 1 0))
+
          + (if (and (string? operando1) (string? operando2))
              (str operando1 operando2)
              (+ operando1 operando2))
