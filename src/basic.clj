@@ -619,6 +619,27 @@
                  imprimo-programa (print programa)
                  ]
              [:sin-errores amb])
+      CLEAR [:sin-errores (conj (pop amb) {})]
+      LET (evaluar (next sentencia) amb)
+
+      DATA [:sin-errores amb]
+      READ (if (= (count sentencia) 1)
+             [:sin-errores amb] ; Voy a hacer que read se llame a si mismo con un argumento menos
+             (let [data-mem (amb 4)
+                   data-ptr (amb 5)
+                   updated-vars (assoc (last amb) (second sentencia) ((vec data-mem) data-ptr))
+                   nuevo-amb (assoc amb 5 (inc data-ptr) 6 updated-vars) ; Subo 1 al puntero de data y actualizo las variables
+                   ]
+               (if (< data-ptr (count data-mem))
+                 (evaluar (concat '(READ) (drop 2 (next sentencia))) nuevo-amb)
+                 (do (dar-error 42 (amb 1)) [nil amb]) ; Out of data error
+                 )
+               )
+             )
+      RESTORE [:sin-errores (assoc amb 5 0)]
+
+      END [:sin-errores amb]
+
       (if (= (second sentencia) '=)
         (let [resu (ejecutar-asignacion sentencia amb)]
           (if (nil? resu)
@@ -680,9 +701,14 @@
              (str operando1 operando2)
              (+ operando1 operando2))
          * (if (or (string? operando1) (string? operando2))
-             (dar-error 16 nro-linea)
+             (dar-error 163 nro-linea)
              (* operando1 operando2)
              )
+         - (if (or (string? operando1) (string? operando2))
+               (dar-error 163 nro-linea)
+               (- operando1 operando2)
+               )
+
          / (if (= operando2 0) (dar-error 133 nro-linea) (float (/ operando1 operando2)))  ; Division by zero error TODO: Preguntar si se puede poner el float
          AND (let [op1 (+ 0 operando1), op2 (+ 0 operando2)] (if (and (not= op1 0) (not= op2 0)) 1 0))
          OR (let [op1 (+ 0 operando1), op2 (+ 0 operando2)] (if (or (not= op1 0) (not= op2 0)) 1 0))
@@ -1027,20 +1053,18 @@
   )
 
 (defn extraer-data-linea [linea]
-  (reduce (
-            fn [accum, sent] (concat accum (if (= (first sent) 'DATA) (next sent)))
-            )
-          ()
-          linea
-
-          )
+  (reduce
+    concat
+    (map #(if (= (first %) 'DATA) (next %) '()) linea)
+    )
   )
 
 (defn extraer-data [prg]
-  (reduce (fn [accum, linea] (concat accum (extraer-data-linea (filtrar-pos-rem (next linea)))))
-          ()
+  (remove #{(symbol ",")}
+          (reduce (fn [accum, linea] (concat accum (extraer-data-linea (filtrar-pos-rem (next linea)))))
+            ()
           prg
-    )
+    ))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1059,11 +1083,11 @@
 
 
 (defn ejecutar-asignacion [sentencia amb]
-  ; Deberia verificar que no se cumpliera, pero supongo que siempre viene la forma deseada ( variable = expresion-a-calcular )
+  ; Siempre viene la forma deseada ( variable = expresion-a-calcular )
   (let [vars (last amb)
         updated-vars (assoc vars (first sentencia) (calcular-expresion (drop 2 sentencia) amb))
-        amb-sin-vars (pop amb)] ; Tengo que hacer eso porque son inmutables
-    (vec (concat amb-sin-vars (list updated-vars))) ;TODO: Ver como se podra evaluar la parte de la derecha, pareciera que no puede venir cualquier cosa
+        ]
+    (assoc amb 6 updated-vars)
     )
   )
 
@@ -1129,7 +1153,8 @@
 (defn precedencia [token]
   (cond
     (number? token) 20 ; Le doy la mejor prioridad a los numeros
-    (.contains (map symbol ["(" ")"]) token) 10
+    (string? token) 20 ; Le doy la mejor prioridad a las strings
+    (.contains (map symbol ["(" ")"]) token) -1
     (.contains (map symbol ["MID$", "MID3$"]) token) 9
     (= token '-u) 8
     (= (symbol "^") token) 7
@@ -1162,6 +1187,7 @@
 (defn aridad [token]
   (cond ; Utilice https://fjkraan.home.xs4all.nl/comp/apple2faq/app2asoftfaq.html
     (operador? token) 2
+    (= '-u token) 1
     (.contains '(ATN INT SIN) token) 1 ; Numericas
     (.contains '(ASC CHR$ STR$) token) 1; Conversion de tipos
     (= 'LEN token) 1; Cadenas de caracteres

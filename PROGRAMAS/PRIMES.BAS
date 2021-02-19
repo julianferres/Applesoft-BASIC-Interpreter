@@ -1,4 +1,5 @@
 10 INPUT "SEARCH PRIME NUMBERS UP TO: "; MAX
+15 print max; "we"
 20 X = 1
 30 LET P = .
 40 IF X < 2 OR X <> INT(X) GOTO160

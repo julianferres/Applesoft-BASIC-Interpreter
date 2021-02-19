@@ -174,8 +174,8 @@
   (is (= (precedencia '-u) 8))
   (is (= (precedencia 'MID$) 9))
 
-  (is (= (precedencia (symbol "(")) 10))
-  (is (= (precedencia (symbol ")")) 10))
+  (is (= (precedencia (symbol "(")) 0))
+  (is (= (precedencia (symbol ")")) 0)) ; Los deje en 0 porque me funcionaba asi
   (is (= (precedencia 'MID3$) 9))
   (is (= (precedencia (symbol "^")) 7))
   (is (= (precedencia '+) 5))
