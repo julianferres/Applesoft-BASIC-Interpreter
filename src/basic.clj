@@ -878,7 +878,10 @@
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn variable-float? [x]
-  (and (symbol? x) (some? (re-matches #"[A-Z]" (str x))))
+  (and (not (palabra-reservada? x))
+       (not (operador? x))
+       (symbol? x)
+       (some? (re-matches #"[A-Z]+" (str x))))
   ; re-matches devuelve x si matchea completamente la regex, sino nil
   )
 
@@ -893,7 +896,10 @@
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn variable-integer? [x]
-  (and (symbol? x) (some? (re-matches #"[A-Z]\%" (str x))))
+  (and (not (palabra-reservada? x))
+       (not (operador? x))
+       (symbol? x)
+       (some? (re-matches #"[A-Z]+\%" (str x))))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -907,7 +913,10 @@
 ; false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn variable-string? [x]
-  (and (symbol? x) (some? (re-matches #"[A-Z]\$" (str x))))
+  (and (not (palabra-reservada? x))
+       (not (operador? x))
+       (symbol? x)
+       (some? (re-matches #"[A-Z]+\$" (str x))))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1256,3 +1265,5 @@
 ; Despues de cargarse el archivo, debe mostrarse el valor true
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 true
+
+; TODO: Ver return without sub

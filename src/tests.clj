@@ -64,6 +64,8 @@
   (is (= false (variable-float? 'X%)))
   (is (= false (variable-float? 'X$)))
   (is (= false (variable-float? "X$")))
+  (is (= true (variable-float? 'HEX)))
+  (is (= false (variable-float? 'INT)))
 )
 
 (deftest test-variable-integer?
@@ -71,6 +73,7 @@
   (is (= true (variable-integer? 'X%)))
   (is (= false (variable-integer? 'X$)))
   (is (= false (variable-integer? "X$")))
+  (is (= true (variable-integer? 'HEX%)))
   )
 
 (deftest test-variable-string?
@@ -78,6 +81,9 @@
   (is (= false (variable-string? 'X%)))
   (is (= true (variable-string? 'X$)))
   (is (= false (variable-string? "X$")))
+  (is (= true (variable-string? 'HEX$)))
+  (is (= false (variable-string? 'MID$)))
+  (is (= false (variable-string? 'MID3$)))
   )
 
 (deftest test-eliminar-cero-decimal
@@ -174,8 +180,8 @@
   (is (= (precedencia '-u) 8))
   (is (= (precedencia 'MID$) 9))
 
-  (is (= (precedencia (symbol "(")) 0))
-  (is (= (precedencia (symbol ")")) 0)) ; Los deje en 0 porque me funcionaba asi
+  (is (= (precedencia (symbol "(")) -1))
+  (is (= (precedencia (symbol ")")) -1)) ; Los deje en -1 porque es menor que la coma
   (is (= (precedencia 'MID3$) 9))
   (is (= (precedencia (symbol "^")) 7))
   (is (= (precedencia '+) 5))
