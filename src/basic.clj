@@ -811,8 +811,8 @@
 ; user=> (expandir-next-sentencia '(NEXT I , J))
 ; ((NEXT I) (NEXT J))
 (defn expandir-next-sentencia [sentencia]
-  (if (not= (first sentencia) 'NEXT)
-    (list sentencia) ; Si no es de tipo NEXT, la devuelvo como esta, pero adentro de una lista
+  (if (or (not= (first sentencia) 'NEXT) (= (count sentencia) 1))
+    (list sentencia) ; Si no es de tipo NEXT, o es solo NEXT sin variables, la devuelvo como esta, pero adentro de una lista
     (->> sentencia
       (next) ; Me saco el primer NEXT
       (remove #(= % (symbol ","))) ; Elimina los tokens "," (coma); dejando las variables
