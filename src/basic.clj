@@ -638,7 +638,7 @@
              )
       RESTORE [:sin-errores (assoc amb 5 0)]
 
-      END [:sin-errores amb]
+      END [:omitir-restante (assoc amb 1 [:ejecucion-inmediata 0])]
 
       (if (= (second sentencia) '=)
         (let [resu (ejecutar-asignacion sentencia amb)]
